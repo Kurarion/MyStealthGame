@@ -8,6 +8,7 @@
 
 class UBoxComponent;
 class UDecalComponent;
+class USoundBase;
 
 UCLASS()
 class FPSGAME_API AFPSCompleteGame : public AActor
@@ -18,6 +19,8 @@ public:
 	// Sets default values for this actor's properties
 	AFPSCompleteGame();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+		USoundBase* FailedMission;
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		UBoxComponent* BoxComp;

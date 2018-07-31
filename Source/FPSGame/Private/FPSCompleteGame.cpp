@@ -5,6 +5,7 @@
 #include "Components/DecalComponent.h"
 #include "FPSCharacter.h"
 #include "FPSGameMode.h"
+#include "kismet/GameplayStatics.h"
 
 // Sets default values
 AFPSCompleteGame::AFPSCompleteGame()
@@ -26,16 +27,30 @@ AFPSCompleteGame::AFPSCompleteGame()
 
 void AFPSCompleteGame::HandleCollision(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("OK!!!"));
+	
 
 	AFPSCharacter* myCharacter = Cast<AFPSCharacter>(OtherActor);
-	if (myCharacter&&myCharacter->bIsCarryingObjective == true)
+	if (myCharacter==nullptr)
 	{
+		return;
+	}
+
+	
+
+
+	if (myCharacter->bIsCarryingObjective == true)
+	{
+		UE_LOG(LogTemp, Log, TEXT("OK!!!"));
+
 		AFPSGameMode* myGameMode = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
+
 		if (myGameMode)
 		{
 			myGameMode->MissionCompleted(myCharacter);
 		}
 	}
-
+	else
+	{
+		UGameplayStatics::PlaySound2D(this, FailedMission);
+	}
 }
