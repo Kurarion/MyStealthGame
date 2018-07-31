@@ -4,7 +4,7 @@
 #include "FPSHUD.h"
 #include "FPSCharacter.h"
 #include "UObject/ConstructorHelpers.h"
-
+#include "Kismet/GameplayStatics.h"
 AFPSGameMode::AFPSGameMode()
 {
 	// set default pawn class to our Blueprinted character
@@ -17,10 +17,31 @@ AFPSGameMode::AFPSGameMode()
 
 void AFPSGameMode::MissionCompleted(APawn* FPSCharacter)
 {
-	AFPSCharacter* myCharacter = Cast<AFPSCharacter>(FPSCharacter);
-	if (myCharacter)
+	if (FPSCharacter)
 	{
-		FPSCharacter->DisableInput(nullptr);
+		if (SpectatingViewpointClass) {
+			FPSCharacter->DisableInput(nullptr);
+
+
+			TArray<AActor*> ReturnedActor;
+			UGameplayStatics::GetAllActorsOfClass(this, SpectatingViewpointClass, ReturnedActor);
+
+			if (ReturnedActor.Num() > 0) {
+				AActor* NewViewTarget = ReturnedActor[0];
+
+				APlayerController* PC = Cast<APlayerController>(FPSCharacter->GetController());
+
+				if (PC)
+				{
+					PC->SetViewTargetWithBlend(NewViewTarget, 2.0f, EViewTargetBlendFunction::VTBlend_Cubic);
+				}
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("Set the SpectatingViewpointClass!"));
+		}
+
 	}
 
 	OnMissionComplete(FPSCharacter);
