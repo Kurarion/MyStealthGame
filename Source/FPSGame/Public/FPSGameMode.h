@@ -14,6 +14,11 @@ class AFPSGameMode : public AGameModeBase
 public:
 
 	AFPSGameMode();
+
+	void MissionCompleted(APawn* FPSCharacter);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
+		void OnMissionComplete(APawn* FPSCharacter);
 };
 
 

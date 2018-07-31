@@ -3,6 +3,8 @@
 #include "FPSCompleteGame.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
+#include "FPSCharacter.h"
+#include "FPSGameMode.h"
 
 // Sets default values
 AFPSCompleteGame::AFPSCompleteGame()
@@ -25,4 +27,15 @@ AFPSCompleteGame::AFPSCompleteGame()
 void AFPSCompleteGame::HandleCollision(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	UE_LOG(LogTemp, Log, TEXT("OK!!!"));
+
+	AFPSCharacter* myCharacter = Cast<AFPSCharacter>(OtherActor);
+	if (myCharacter&&myCharacter->bIsCarryingObjective == true)
+	{
+		AFPSGameMode* myGameMode = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
+		if (myGameMode)
+		{
+			myGameMode->MissionCompleted(myCharacter);
+		}
+	}
+
 }

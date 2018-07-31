@@ -14,3 +14,15 @@ AFPSGameMode::AFPSGameMode()
 	// use our custom HUD class
 	HUDClass = AFPSHUD::StaticClass();
 }
+
+void AFPSGameMode::MissionCompleted(APawn* FPSCharacter)
+{
+	AFPSCharacter* myCharacter = Cast<AFPSCharacter>(FPSCharacter);
+	if (myCharacter)
+	{
+		FPSCharacter->DisableInput(nullptr);
+	}
+
+	OnMissionComplete(FPSCharacter);
+}
+
