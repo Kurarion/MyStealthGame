@@ -36,6 +36,9 @@ protected:
 public:
 	AFPSCharacter();
 
+	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+		bool bIsCarryingObjective;
+
 	/** Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category="Projectile")
 	TSubclassOf<AFPSProjectile> ProjectileClass;
