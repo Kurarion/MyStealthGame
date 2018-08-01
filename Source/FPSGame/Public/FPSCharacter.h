@@ -36,8 +36,7 @@ protected:
 public:
 	AFPSCharacter();
 
-	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
-		bool bIsCarryingObjective;
+
 
 	/** Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category="Projectile")
@@ -50,6 +49,9 @@ public:
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	UAnimSequence* FireAnimation;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+		bool bIsCarryingObjective;
 
 protected:
 	
