@@ -6,12 +6,12 @@
 // Sets default values
 AFPSAIGurad::AFPSAIGurad()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	PawnSence = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSence"));
 
-	
+
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +21,8 @@ void AFPSAIGurad::BeginPlay()
 	PawnSence->OnSeePawn.AddDynamic(this, &AFPSAIGurad::OnSeePawn);
 
 	PawnSence->OnHearNoise.AddDynamic(this, &AFPSAIGurad::OnHearNoise);
+
+	OriginRotation = GetActorRotation();
 }
 
 void AFPSAIGurad::OnSeePawn(APawn * Pawn)
@@ -37,6 +39,24 @@ void AFPSAIGurad::OnHearNoise(APawn * NoiseInstigator, const FVector & Location,
 {
 
 	DrawDebugSphere(GetWorld(), Location, 20.0f, 12, FColor::Red, true, 5.0f);
+
+	FVector Dir = Location - GetActorLocation();
+	Dir.Normalize();
+	FRotator NewLookDir = FRotationMatrix::MakeFromX(Dir).Rotator();
+	NewLookDir.Pitch = 0;
+	NewLookDir.Roll = 0;
+
+
+	SetActorRotation(NewLookDir);
+
+	GetWorldTimerManager().ClearTimer(TimeHandle_ResetRotation);
+	GetWorldTimerManager().SetTimer(TimeHandle_ResetRotation, this, &AFPSAIGurad::OnResetRotation, 3.0f);
+
+}
+
+void AFPSAIGurad::OnResetRotation()
+{
+	SetActorRotation(OriginRotation);
 }
 
 // Called every frame
