@@ -19,6 +19,8 @@ void AFPSAIGurad::BeginPlay()
 {
 	Super::BeginPlay();
 	PawnSence->OnSeePawn.AddDynamic(this, &AFPSAIGurad::OnSeePawn);
+
+	PawnSence->OnHearNoise.AddDynamic(this, &AFPSAIGurad::OnHearNoise);
 }
 
 void AFPSAIGurad::OnSeePawn(APawn * Pawn)
@@ -29,6 +31,12 @@ void AFPSAIGurad::OnSeePawn(APawn * Pawn)
 	}
 
 	DrawDebugSphere(GetWorld(), Pawn->GetActorLocation(), 20.0f, 12, FColor::Blue, true, 5.0f);
+}
+
+void AFPSAIGurad::OnHearNoise(APawn * NoiseInstigator, const FVector & Location, float Volume)
+{
+
+	DrawDebugSphere(GetWorld(), Location, 20.0f, 12, FColor::Red, true, 5.0f);
 }
 
 // Called every frame
