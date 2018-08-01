@@ -57,7 +57,6 @@ void AFPSCharacter::Fire()
 		
 		FVector MuzzleLocation = GunMeshComponent->GetSocketLocation("Muzzle");
 		FRotator MuzzleRotation = GunMeshComponent->GetSocketRotation("Muzzle");
-		UE_LOG(LogTemp, Log, TEXT("MuzzleLocation:%f  MuzzleRotation:%f"), MuzzleLocation, MuzzleRotation);
 		//Set Spawn Collision Handling Override
 		FActorSpawnParameters ActorSpawnParams;
 		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;

@@ -22,6 +22,7 @@ AFPSBlackHole::AFPSBlackHole()
 	
 
 	outerSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("OuterSphere"));
+	outerSphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	outerSphereComp->SetSphereRadius(3000);
 	outerSphereComp->SetupAttachment(meshComp);
 
