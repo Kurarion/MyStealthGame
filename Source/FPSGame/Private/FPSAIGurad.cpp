@@ -2,7 +2,7 @@
 
 #include "FPSAIGurad.h"
 #include "Perception/PawnSensingComponent.h"
-
+#include "DrawDebugHelpers.h"
 // Sets default values
 AFPSAIGurad::AFPSAIGurad()
 {
@@ -11,13 +11,24 @@ AFPSAIGurad::AFPSAIGurad()
 
 	PawnSence = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSence"));
 
+	
 }
 
 // Called when the game starts or when spawned
 void AFPSAIGurad::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	PawnSence->OnSeePawn.AddDynamic(this, &AFPSAIGurad::OnSeePawn);
+}
+
+void AFPSAIGurad::OnSeePawn(APawn * Pawn)
+{
+	if (Pawn == nullptr)
+	{
+		return;
+	}
+
+	DrawDebugSphere(GetWorld(), Pawn->GetActorLocation(), 20.0f, 12, FColor::Blue, true, 5.0f);
 }
 
 // Called every frame
