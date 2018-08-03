@@ -17,10 +17,10 @@ public:
 
 	AFPSGameMode();
 
-	void MissionCompleted(APawn* FPSCharacter);
+	void MissionCompleted(APawn* FPSCharacter, bool status);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
-		void OnMissionComplete(APawn* FPSCharacter);
+		void OnMissionComplete(APawn* FPSCharacter, bool status);
 };
 
 

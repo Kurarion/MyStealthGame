@@ -55,6 +55,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 void AFPSCharacter::Fire()
 {
 	UE_LOG(LogTemp, Log, TEXT("Fire"));
+	MakeNoise(1.0f,this);
 	// try and fire a projectile
 	if (ProjectileClass)
 	{

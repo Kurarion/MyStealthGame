@@ -8,6 +8,16 @@
 
 class UPawnSensingComponent;
 
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	Idle,
+
+	Suspicous,
+
+	Found
+};
+
 UCLASS()
 class FPSGAME_API AFPSAIGurad : public ACharacter
 {
@@ -33,6 +43,13 @@ protected:
 	FRotator OriginRotation;
 
 	FTimerHandle TimeHandle_ResetRotation;
+
+	EAIState AIState;
+
+	void SetAIState(EAIState newState);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
+		void OnBeenFound(EAIState GuradState);
 
 	UFUNCTION()
 		void OnResetRotation();

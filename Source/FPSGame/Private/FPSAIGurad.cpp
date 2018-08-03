@@ -3,6 +3,7 @@
 #include "FPSAIGurad.h"
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
+#include "FPSGameMode.h"
 // Sets default values
 AFPSAIGurad::AFPSAIGurad()
 {
@@ -11,7 +12,7 @@ AFPSAIGurad::AFPSAIGurad()
 
 	PawnSence = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSence"));
 
-
+	AIState = EAIState::Idle;
 }
 
 // Called when the game starts or when spawned
@@ -31,13 +32,24 @@ void AFPSAIGurad::OnSeePawn(APawn * Pawn)
 	{
 		return;
 	}
+	AFPSGameMode* myGameMode = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (myGameMode)
+	{
+		myGameMode->MissionCompleted(Pawn, false);
+	}
 
 	DrawDebugSphere(GetWorld(), Pawn->GetActorLocation(), 20.0f, 12, FColor::Blue, true, 5.0f);
+
+	SetAIState(EAIState::Found);
 }
 
 void AFPSAIGurad::OnHearNoise(APawn * NoiseInstigator, const FVector & Location, float Volume)
 {
-
+	if (AIState==EAIState::Found)
+	{
+		return;
+	}
 	DrawDebugSphere(GetWorld(), Location, 20.0f, 12, FColor::Red, true, 5.0f);
 
 	FVector Dir = Location - GetActorLocation();
@@ -52,11 +64,32 @@ void AFPSAIGurad::OnHearNoise(APawn * NoiseInstigator, const FVector & Location,
 	GetWorldTimerManager().ClearTimer(TimeHandle_ResetRotation);
 	GetWorldTimerManager().SetTimer(TimeHandle_ResetRotation, this, &AFPSAIGurad::OnResetRotation, 3.0f);
 
+
+	SetAIState(EAIState::Suspicous);
+}
+
+void AFPSAIGurad::SetAIState(EAIState newState)
+{
+	if(newState==AIState)
+	{
+		return;
+	}
+	AIState = newState;
+
+	OnBeenFound(AIState);
+	
 }
 
 void AFPSAIGurad::OnResetRotation()
 {
+	if (AIState == EAIState::Found)
+	{
+		return;
+	}
+
 	SetActorRotation(OriginRotation);
+
+	SetAIState(EAIState::Idle);
 }
 
 // Called every frame

@@ -46,7 +46,7 @@ void AFPSCompleteGame::HandleCollision(UPrimitiveComponent * OverlappedComponent
 
 		if (myGameMode)
 		{
-			myGameMode->MissionCompleted(myCharacter);
+			myGameMode->MissionCompleted(myCharacter, true);
 		}
 	}
 	else

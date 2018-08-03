@@ -15,7 +15,7 @@ AFPSGameMode::AFPSGameMode()
 	HUDClass = AFPSHUD::StaticClass();
 }
 
-void AFPSGameMode::MissionCompleted(APawn* FPSCharacter)
+void AFPSGameMode::MissionCompleted(APawn* FPSCharacter,bool status)
 {
 	if (FPSCharacter)
 	{
@@ -44,6 +44,6 @@ void AFPSGameMode::MissionCompleted(APawn* FPSCharacter)
 
 	}
 
-	OnMissionComplete(FPSCharacter);
+	OnMissionComplete(FPSCharacter,status);
 }
 
