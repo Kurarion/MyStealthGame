@@ -53,6 +53,20 @@ protected:
 
 	UFUNCTION()
 		void OnResetRotation();
+
+	UPROPERTY(EditInstanceOnly, Category = "AISettings")
+		bool bStartWalk;
+
+	UPROPERTY(EditInstanceOnly, Category = "AISettings", meta = (EditCondition = "bStartWalk"))
+		AActor *FirstPoint;
+
+	UPROPERTY(EditInstanceOnly, Category = "AISettings", meta = (EditCondition = "bStartWalk"))
+		AActor *SecondPoint;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "AISettings", meta = (EditCondition = "bStartWalk"))
+		AActor* NextPoint;
+
+	void Walk();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

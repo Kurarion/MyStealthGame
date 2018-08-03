@@ -4,6 +4,8 @@
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "FPSGameMode.h"
+#include "AI/Navigation/NavigationSystem.h"
+#include "GameFramework/Controller.h"
 // Sets default values
 AFPSAIGurad::AFPSAIGurad()
 {
@@ -24,6 +26,13 @@ void AFPSAIGurad::BeginPlay()
 	PawnSence->OnHearNoise.AddDynamic(this, &AFPSAIGurad::OnHearNoise);
 
 	OriginRotation = GetActorRotation();
+
+	NextPoint = FirstPoint;
+
+	if (bStartWalk)
+	{
+		Walk();
+	}
 }
 
 void AFPSAIGurad::OnSeePawn(APawn * Pawn)
@@ -42,6 +51,14 @@ void AFPSAIGurad::OnSeePawn(APawn * Pawn)
 	DrawDebugSphere(GetWorld(), Pawn->GetActorLocation(), 20.0f, 12, FColor::Blue, true, 5.0f);
 
 	SetAIState(EAIState::Found);
+
+
+	AController* AIController = GetController();
+
+	if (bStartWalk)
+	{
+		AIController->StopMovement();
+	}
 }
 
 void AFPSAIGurad::OnHearNoise(APawn * NoiseInstigator, const FVector & Location, float Volume)
@@ -66,6 +83,14 @@ void AFPSAIGurad::OnHearNoise(APawn * NoiseInstigator, const FVector & Location,
 
 
 	SetAIState(EAIState::Suspicous);
+
+
+	AController* AIController = GetController();
+
+	if (bStartWalk)
+	{
+		AIController->StopMovement();
+	}
 }
 
 void AFPSAIGurad::SetAIState(EAIState newState)
@@ -92,11 +117,36 @@ void AFPSAIGurad::OnResetRotation()
 	SetAIState(EAIState::Idle);
 }
 
+void AFPSAIGurad::Walk()
+{
+	if (NextPoint == FirstPoint)
+	{
+		NextPoint = SecondPoint;
+	}
+	else
+	{
+		NextPoint = FirstPoint;
+	}
+	UNavigationSystem::SimpleMoveToActor(GetController(), NextPoint);
+}
+
 // Called every frame
 void AFPSAIGurad::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (NextPoint)
+	{
+		FVector Dis = GetActorLocation()- NextPoint->GetActorLocation();
+		float Distance = Dis.Size();
 
+		if (Distance < 200) 
+		{
+			//UE_LOG(LogTemp, Log, TEXT("xxxx"));
+			Walk();
+		}
+
+
+	}
 }
 
 
