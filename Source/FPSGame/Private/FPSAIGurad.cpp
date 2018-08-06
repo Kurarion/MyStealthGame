@@ -115,6 +115,8 @@ void AFPSAIGurad::OnResetRotation()
 	SetActorRotation(OriginRotation);
 
 	SetAIState(EAIState::Idle);
+
+	UNavigationSystem::SimpleMoveToActor(GetController(), NextPoint);
 }
 
 void AFPSAIGurad::Walk()

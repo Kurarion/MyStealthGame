@@ -31,6 +31,9 @@ AFPSProjectile::AFPSProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 
@@ -43,9 +46,13 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 
 		
 	}
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExploedFX, GetActorLocation());
+	if (Role == ROLE_Authority)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExploedFX, GetActorLocation());
 
-	MakeNoise(1.0f, Instigator);
+		MakeNoise(1.0f, Instigator);
 
-	Destroy();
+		Destroy();
+	}
+
 }

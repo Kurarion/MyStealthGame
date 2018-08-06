@@ -36,6 +36,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 		UPawnNoiseEmitterComponent* PawnNoiseEmitterComp;
 
+	UFUNCTION(Server, Reliable, WithValidation)
+		void Fire_Sever();
+
 public:
 	AFPSCharacter();
 
@@ -76,5 +79,6 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return CameraComponent; }
 
+	virtual void Tick(float DeltaSeconds) override;
 };
 

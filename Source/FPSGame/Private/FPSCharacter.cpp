@@ -8,7 +8,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 
-
 AFPSCharacter::AFPSCharacter()
 {
 	// Create a CameraComponent	
@@ -51,26 +50,26 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 }
 
+void AFPSCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (!IsLocallyControlled())
+	{
+		FRotator newVector = CameraComponent->RelativeRotation;
+		newVector.Pitch = RemoteViewPitch*360.0f / 255;
+
+		CameraComponent->SetRelativeRotation(newVector);
+	}
+}
+
 
 void AFPSCharacter::Fire()
 {
 	UE_LOG(LogTemp, Log, TEXT("Fire"));
-	MakeNoise(1.0f,this);
+	//MakeNoise(1.0f,this);
 	// try and fire a projectile
-	if (ProjectileClass)
-	{
-		
-		FVector MuzzleLocation = GunMeshComponent->GetSocketLocation("Muzzle");
-		FRotator MuzzleRotation = GunMeshComponent->GetSocketRotation("Muzzle");
-		//Set Spawn Collision Handling Override
-		FActorSpawnParameters ActorSpawnParams;
-		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-		ActorSpawnParams.Instigator = this;
 
-		// spawn the projectile at the muzzle
-		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
-	}
-
+	Fire_Sever();
 	// try and play the sound if specified
 	if (FireSound)
 	{
@@ -89,6 +88,27 @@ void AFPSCharacter::Fire()
 	}
 }
 
+void AFPSCharacter::Fire_Sever_Implementation()
+{
+	if (ProjectileClass)
+	{
+
+		FVector MuzzleLocation = GunMeshComponent->GetSocketLocation("Muzzle");
+		FRotator MuzzleRotation = GunMeshComponent->GetSocketRotation("Muzzle");
+		//Set Spawn Collision Handling Override
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+		ActorSpawnParams.Instigator = this;
+
+		// spawn the projectile at the muzzle
+		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
+	}
+}
+
+bool AFPSCharacter::Fire_Sever_Validate()
+{
+	return true;
+}
 
 void AFPSCharacter::MoveForward(float Value)
 {
