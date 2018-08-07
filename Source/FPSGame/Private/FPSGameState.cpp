@@ -2,17 +2,34 @@
 
 #include "FPSGameState.h"
 #include "Engine/World.h"
-
+#include "FPSGameController.h"
 
 
 void AFPSGameState::OnMissionCompleted_Implementation(APawn* FPSCharacter, bool bMissionSuccess)
 {
-	
+	//for (FConstPawnIterator PawnIt = GetWorld()->GetPawnIterator(); PawnIt;++PawnIt)
+	//{
+	//	APawn* pawn= PawnIt->Get();
 
-	for (FConstPawnIterator PawnIt = GetWorld()->GetPawnIterator(); PawnIt;++PawnIt)
+	//	pawn->DisableInput(nullptr);
+	//}
+
+	for (FConstControllerIterator ControllerIt = GetWorld()->GetControllerIterator(); ControllerIt; ++ControllerIt)
 	{
-		APawn* pawn= PawnIt->Get();
+		AFPSGameController* FPSCon = Cast<AFPSGameController>(ControllerIt->Get());
 
-		pawn->DisableInput(nullptr);
+		if (FPSCon&&FPSCon->IsLocalController())
+		{
+			FPSCon->OnMissionComplete(FPSCharacter, bMissionSuccess);
+
+			APawn* FPSPawn = ControllerIt->Get()->GetPawn();
+			if (FPSPawn)
+			{
+				FPSPawn->DisableInput(nullptr);
+			}
+		}
+
+
+		
 	}
 }

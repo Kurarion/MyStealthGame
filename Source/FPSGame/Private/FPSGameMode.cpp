@@ -6,6 +6,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "FPSGameState.h"
+#include "Engine/World.h"
 AFPSGameMode::AFPSGameMode()
 {
 	// set default pawn class to our Blueprinted character
@@ -16,9 +17,11 @@ AFPSGameMode::AFPSGameMode()
 	HUDClass = AFPSHUD::StaticClass();
 
 	GameStateClass = AFPSGameState::StaticClass();
+
+
 }
 
-void AFPSGameMode::MissionCompleted(APawn* FPSCharacter,bool status)
+void AFPSGameMode::MissionCompleted(APawn* FPSCharacter, bool status)
 {
 	if (FPSCharacter)
 	{
@@ -33,11 +36,21 @@ void AFPSGameMode::MissionCompleted(APawn* FPSCharacter,bool status)
 			if (ReturnedActor.Num() > 0) {
 				AActor* NewViewTarget = ReturnedActor[0];
 
-				APlayerController* PC = Cast<APlayerController>(FPSCharacter->GetController());
+				//APlayerController* PC = Cast<APlayerController>(FPSCharacter->GetController());
 
-				if (PC)
+				//if (PC)
+				//{
+				//	PC->SetViewTargetWithBlend(NewViewTarget, 2.0f, EViewTargetBlendFunction::VTBlend_Cubic);
+				//}
+				for (FConstControllerIterator ConIt = GetWorld()->GetControllerIterator(); ConIt; ++ConIt)
 				{
-					PC->SetViewTargetWithBlend(NewViewTarget, 2.0f, EViewTargetBlendFunction::VTBlend_Cubic);
+					APlayerController* PC = Cast<APlayerController>(ConIt->Get());
+					if (PC)
+					{
+						PC->SetViewTargetWithBlend(NewViewTarget, 2.0f, EViewTargetBlendFunction::VTBlend_Cubic);
+
+					}
+
 				}
 			}
 		}
@@ -48,6 +61,6 @@ void AFPSGameMode::MissionCompleted(APawn* FPSCharacter,bool status)
 
 	}
 
-	OnMissionComplete(FPSCharacter,status);
+	OnMissionComplete(FPSCharacter, status);
 }
 
