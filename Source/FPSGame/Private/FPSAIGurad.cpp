@@ -6,6 +6,7 @@
 #include "FPSGameMode.h"
 #include "AI/Navigation/NavigationSystem.h"
 #include "GameFramework/Controller.h"
+#include "Net/UnrealNetwork.h"
 // Sets default values
 AFPSAIGurad::AFPSAIGurad()
 {
@@ -93,6 +94,11 @@ void AFPSAIGurad::OnHearNoise(APawn * NoiseInstigator, const FVector & Location,
 	}
 }
 
+void AFPSAIGurad::OnRep_AIStateChanged()
+{
+	OnBeenFound(AIState);
+}
+
 void AFPSAIGurad::SetAIState(EAIState newState)
 {
 	if(newState==AIState)
@@ -101,7 +107,7 @@ void AFPSAIGurad::SetAIState(EAIState newState)
 	}
 	AIState = newState;
 
-	OnBeenFound(AIState);
+	OnRep_AIStateChanged();
 	
 }
 
@@ -149,6 +155,13 @@ void AFPSAIGurad::Tick(float DeltaTime)
 
 
 	}
+}
+
+void AFPSAIGurad::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AFPSAIGurad, AIState);
 }
 
 

@@ -5,6 +5,7 @@
 #include "FPSCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "FPSGameState.h"
 AFPSGameMode::AFPSGameMode()
 {
 	// set default pawn class to our Blueprinted character
@@ -13,6 +14,8 @@ AFPSGameMode::AFPSGameMode()
 
 	// use our custom HUD class
 	HUDClass = AFPSHUD::StaticClass();
+
+	GameStateClass = AFPSGameState::StaticClass();
 }
 
 void AFPSGameMode::MissionCompleted(APawn* FPSCharacter,bool status)
@@ -20,8 +23,9 @@ void AFPSGameMode::MissionCompleted(APawn* FPSCharacter,bool status)
 	if (FPSCharacter)
 	{
 		if (SpectatingViewpointClass) {
-			FPSCharacter->DisableInput(nullptr);
-
+			//FPSCharacter->DisableInput(nullptr);
+			AFPSGameState* GS = GetGameState<AFPSGameState>();
+			GS->OnMissionCompleted(FPSCharacter, status);
 
 			TArray<AActor*> ReturnedActor;
 			UGameplayStatics::GetAllActorsOfClass(this, SpectatingViewpointClass, ReturnedActor);

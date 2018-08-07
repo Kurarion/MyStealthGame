@@ -44,7 +44,11 @@ protected:
 
 	FTimerHandle TimeHandle_ResetRotation;
 
-	EAIState AIState;
+	UPROPERTY(ReplicatedUsing = OnRep_AIStateChanged)
+		EAIState AIState;
+
+	UFUNCTION()
+		void OnRep_AIStateChanged();
 
 	void SetAIState(EAIState newState);
 
@@ -67,10 +71,10 @@ protected:
 		AActor* NextPoint;
 
 	void Walk();
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
-	
+
+
 };
